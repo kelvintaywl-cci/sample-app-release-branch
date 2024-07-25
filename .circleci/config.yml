@@ -1,0 +1,28 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run: echo "I am on $CIRCLE_BRANCH"
+
+workflows:
+  default:
+    when:
+      equal:
+        - pre-release
+        - << pipeline.git.branch >>
+    jobs:
+       - build:
+           name: pre-release
+  release:
+    when:
+      not:
+        equal:
+          - pre-release
+          - << pipeline.git.branch >>
+    jobs:
+      - build:
+          name: other
